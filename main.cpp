@@ -81,7 +81,7 @@ int main ( int argc, char *argv[] )
          exit(1);
     }
     double result[K];
-#   pragma omp parallel schedule(dynamic)
+#   pragma omp parallel for schedule(dynamic)
     for(unsigned int t = 0; t < K; t++)
     {
         result[t] = logDataVSPrior(dat, pri, ctf, sigRcp, m, disturb[t]);
