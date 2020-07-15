@@ -1,10 +1,10 @@
 CC	= g++
-CFLAGS	= -std=c++11 -O3 -fopenmp
+CFLAGS	= -std=c++11 -O3 -fopenmp -march=native
 
 all: logVS
 
 logVS: main.o
-	$(CC) -o $@ $^ $(CFLAGS) -O3 -fopenmp
+	$(CC) -o $@ $^ $(CFLAGS)
 
 main.o: main.cpp
 	$(CC) -c $(CFLAGS) $<

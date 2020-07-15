@@ -81,7 +81,7 @@ int main ( int argc, char *argv[] )
          exit(1);
     }
     double result[K];
-#pragma omp parallel for num_threads(20) schedule(static)
+#   pragma omp parallel for num_threads(8) schedule(static)
     for(unsigned int t = 0; t < K; t++)
     {
         result[t] = logDataVSPrior(dat, pri, ctf, sigRcp, m, disturb[t]);
