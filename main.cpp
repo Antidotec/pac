@@ -81,7 +81,7 @@ int main ( int argc, char *argv[] )
          exit(1);
     }
     double result[K];
-#   pragma omp parallel for num_threads(8) schedule(static)
+#   pragma omp parallel schedule(dynamic)
     for(unsigned int t = 0; t < K; t++)
     {
         result[t] = logDataVSPrior(dat, pri, ctf, sigRcp, m, disturb[t]);
@@ -110,7 +110,6 @@ double logDataVSPrior(const Complex* dat, const Complex* pri, const double* ctf,
 
     for (int i = 0; i < num; i++)
     {
-
           result += ( norm( dat[i] - ctf[i] * pri[i] ) * sigRcp[i] );
 
     }
