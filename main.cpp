@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     double result[K];
 #   pragma omp parallel for schedule(dynamic)
     for (unsigned int t = 0; t < K; t++) {
-        result[t] = logDataVSPrior(dat_r,dat_i, pri_r,pri_i ,ctf, sigRcp,disturb[t]);
+        result[t] = logDataVSPrior(dat_r, dat_i, pri_r, pri_i, ctf, sigRcp, disturb[t]);
     }
     for (unsigned int t = 0; t < K; t++)
         fout << t + 1 << ": " << result[t] << endl;
@@ -95,10 +95,10 @@ int main(int argc, char *argv[]) {
     auto compTime = chrono::duration_cast<chrono::microseconds>(endTime - startTime);
     cout << "Computing time=" << compTime.count() << " microseconds" << endl;
 
-    delete[] dat_i;
     delete[] dat_r;
-    delete[] pri_i;
+    delete[] dat_i;
     delete[] pri_r;
+    delete[] pri_i;
 
     delete[] ctf;
     delete[] sigRcp;
@@ -110,16 +110,15 @@ double
 logDataVSPrior(const double *dat_r, const double *dat_i, const double *pri_r, const double *pri_i, const double *ctf,
                const double *sigRcp, const double disturb0) {
     double result = 0.0;
-    double *res = new double[8];
     __m512d a, b, c, d, e, f;
-    for (int i = 0; i <  m / 8; i++) {
+    for (int i = 0; i < m; i += 8) {
         //一次加载8个double
-        a = _mm512_load_pd(dat_r + i * 8);
-        b = _mm512_load_pd(dat_i + i * 8);
-        c = _mm512_load_pd(pri_r + i * 8);
-        d = _mm512_load_pd(pri_i + i * 8);
-        e = _mm512_load_pd(ctf + i * 8);
-        f = _mm512_load_pd(sigRcp + i * 8);
+        a = _mm512_load_pd(dat_r + i);
+        b = _mm512_load_pd(dat_i + i);
+        c = _mm512_load_pd(pri_r + i);
+        d = _mm512_load_pd(pri_i + i);
+        e = _mm512_load_pd(ctf + i);
+        f = _mm512_load_pd(sigRcp + i);
         //相应的运算操作
 
         //1.ce,de
@@ -129,18 +128,16 @@ logDataVSPrior(const double *dat_r, const double *dat_i, const double *pri_r, co
         a = _mm512_sub_pd(a, c);
         b = _mm512_sub_pd(b, d);
         //3.a2,b2
-        a = _mm512_mul_pd(a,a);
-        b = _mm512_mul_pd(b,b);
+        a = _mm512_mul_pd(a, a);
+        b = _mm512_mul_pd(b, b);
         //4.a+b
         a = _mm512_add_pd(a, b);
         //5.a*f
         a = _mm512_mul_pd(a, f);
 
-        //store
-        _mm512_storeu_pd(res, a);
-        for (int j = 0; j < 8; j++) {
-            result += res[j];
-        }
+
+        for (int j = 0; j < 8; j++) 
+            result += a[j];
     }
     return result * disturb0;
 }
