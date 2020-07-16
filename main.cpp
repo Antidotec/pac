@@ -129,8 +129,8 @@ logDataVSPrior(const double *dat_r, const double *dat_i, const double *pri_r, co
         a = _mm512_sub_pd(a, c);
         b = _mm512_sub_pd(b, d);
         //3.a2,b2
-        a = _mm512_exp2a23_pd(a);
-        b = _mm512_exp2a23_pd(b);
+        a = _mm512_mul_pd(a,a);
+        b = _mm512_mul_pd(b,b);
         //4.a+b
         a = _mm512_add_pd(a, b);
         //5.a*f
