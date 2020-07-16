@@ -119,24 +119,22 @@ logDataVSPrior(const double *dat_r, const double *dat_i, const double *pri_r, co
         d = _mm512_loadu_pd(pri_i + i);
         e = _mm512_loadu_pd(ctf + i);
         f = _mm512_loadu_pd(sigRcp + i);
-        //相应的运算操作分解
+        //相应的运算操作
 
         //1.ce,de
-//        c = _mm512_mul_pd(c, e);
-//        d = _mm512_mul_pd(d, e);
-//        //2.a-c,b-d
-//        a = _mm512_sub_pd(a, _mm512_mul_pd(c, e));
-//        b = _mm512_sub_pd(b, _mm512_mul_pd(d, e));
-//        //3.a2,b2
-//        a = _mm512_exp2_pd(_mm512_sub_pd(a, _mm512_mul_pd(c, e)));
-//        b = _mm512_exp2_pd(_mm512_sub_pd(b, _mm512_mul_pd(d, e)));
-//        //4.a+b
-//        a = _mm512_add_pd(_mm512_exp2_pd(_mm512_sub_pd(a, _mm512_mul_pd(c, e))), _mm512_exp2_pd(_mm512_sub_pd(b, _mm512_mul_pd(d, e))));
+        c = _mm512_mul_pd(c, e);
+        d = _mm512_mul_pd(d, e);
+        //2.a-c,b-d
+        a = _mm512_sub_pd(a, c);
+        b = _mm512_sub_pd(b, d);
+        //3.a2,b2
+        a = _mm512_mul_pd(a, a);
+        b = _mm512_mul_pd(b, b);
+        //4.a+b
+        a = _mm512_add_pd(a, b);
         //5.a*f
-        //操作直接合并
-        result += _mm512_reduce_add_pd(_mm512_mul_pd(
-                _mm512_add_pd(_mm512_exp2_pd(_mm512_sub_pd(a, _mm512_mul_pd(c, e))),
-                              _mm512_exp2_pd(_mm512_sub_pd(b, _mm512_mul_pd(d, e)))), f));
+        a = _mm512_mul_pd(a, f);
+        result += _mm512_reduce_add_pd(a);
     }
     return result * disturb0;
 }
