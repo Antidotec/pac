@@ -113,12 +113,12 @@ logDataVSPrior(const double *dat_r, const double *dat_i, const double *pri_r, co
     __m512d a, b, c, d, e, f;
     for (int i = 0; i < m; i += 8) {
         //一次加载8个double
-        a = _mm512_load_pd(dat_r + i);
-        b = _mm512_load_pd(dat_i + i);
-        c = _mm512_load_pd(pri_r + i);
-        d = _mm512_load_pd(pri_i + i);
-        e = _mm512_load_pd(ctf + i);
-        f = _mm512_load_pd(sigRcp + i);
+        a = _mm512_loadu_pd(dat_r + i);
+        b = _mm512_loadu_pd(dat_i + i);
+        c = _mm512_loadu_pd(pri_r + i);
+        d = _mm512_loadu_pd(pri_i + i);
+        e = _mm512_loadu_pd(ctf + i);
+        f = _mm512_loadu_pd(sigRcp + i);
         //相应的运算操作
 
         //1.ce,de
