@@ -13,7 +13,7 @@
 
 using namespace std;
 
-typedef complex<double> Complex;
+//typedef complex<double> Complex;
 typedef chrono::high_resolution_clock Clock;
 
 const int m = 1638400;    // DO NOT CHANGE!!
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     double result[K];
 #   pragma omp parallel for schedule(dynamic)
     for (unsigned int t = 0; t < K; t++) {
-        result[t] = logDataVSPrior(dat, pri, ctf, sigRcp, m, disturb[t]);
+        result[t] = logDataVSPrior(dat_r,dat_i, pri_r,pri_i ,ctf, sigRcp,disturb[t]);
     }
     for (unsigned int t = 0; t < K; t++)
         fout << t + 1 << ": " << result[t] << endl;
