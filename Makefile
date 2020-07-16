@@ -1,5 +1,5 @@
 CC	= icpc
-CFLAGS	= -std=c++11 -O3 -fopenmp -march=native -g
+CFLAGS	= -std=c++11 -ffast-math -O3 -fopenmp -march=native 
 
 all: logVS
 
